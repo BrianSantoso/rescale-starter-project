@@ -1,5 +1,10 @@
 const { app, BrowserWindow, ipcMain, Notification, dialog } = require("electron");
 const path = require("path");
+// const FormData = require('form-data');
+// const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+// const fetch = require('node-fetch');
+const request = require('request');
+const fs = require('fs');
 const isDev = require("electron-is-dev");
 
 let mainWindow;
@@ -64,8 +69,47 @@ ipcMain.on('upload', async (event, data) => {
     console.log('[Backend] Uploading file');
     
     // Show the file upload dialog
-    // Send a HTTP POST request to /upload with the file as multipart/form-data
+    dialog.showOpenDialog({
+        properties:['openFile']
+    })
+    .then((files) => {
+        console.log('Files:', files) // TODO: handle "cancelling" the file dialog
+        let filePaths = files.filePaths
+        // This works:
+        const options = {
+            method: "POST",
+            url: "http://localhost:8080/upload",
+            formData : {
+                "uploadFile" : fs.createReadStream(filePaths[0])
+            }
+        };
+        return new Promise((resolve, reject) => {
+            request(options, function (err, res, body) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(body);
+                }
+            });
+        });
+        // Old approach:
+        // let formData = new FormData();
+        // filePaths.forEach((fPath) => {
+        //     console.log('fPath', fPath)
+        //     formData.append('uploadFile', fs.createReadStream(fPath))
+        // });
+        // var request = new XMLHttpRequest();
+        // request.open("POST", "/upload");
+        // return request.send(JSON.stringify(formData));
 
+        // return fetch('http://localhost:8080/upload', {
+        //     method: 'POST',
+        //     body: formData
+        // })
+    })
+    .then((res) => {
+        console.log('response:', res)
+    });
 });
 
 // Callback for downloading files

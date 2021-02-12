@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "./logo.png";
 import "./App.css";
+import Files from "./Files.js";
 
 function App() {
     return (
@@ -20,9 +21,16 @@ function App() {
                 }}>
                     Upload File
                 </button>
+                <Files></Files>
             </header>
         </div>
     );
 }
+
+// class App extends Component {
+//     render() {
+//         return ()
+//     }
+// }
 
 export default App;
