@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain, Notification, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, ipcRenderer, Notification, dialog } = require("electron");
 const path = require("path");
 // const FormData = require('form-data');
 // const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 // const fetch = require('node-fetch');
+const axios = require('axios');
 const request = require('request');
 const fs = require('fs');
 const isDev = require("electron-is-dev");
@@ -46,6 +47,17 @@ async function createWindow() {
             ? "http://localhost:3000"
             : `file://${path.join(__dirname, "../build/index.html")}`
     );
+
+
+    console.log('TEST')
+    setInterval(() => {
+        console.log('setInterval')
+        axios.get("http://localhost:8080/allfiles")
+            .then(res => {
+                console.log(res)
+                ipcRenderer.send('allFiles', res);
+            })
+    }, 1000);
 }
 
 // Just for testing

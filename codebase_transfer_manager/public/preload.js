@@ -9,7 +9,7 @@ contextBridge.exposeInMainWorld(
     "api", {
         send: (channel, data) => {
             // whitelist channels
-            let validChannels = ["toMain", "notify", "upload", "download"];
+            let validChannels = ["toMain", "notify", "upload", "download", "allFiles"];
 
             // Send an event from the Renderer process to the Main process
             if (validChannels.includes(channel)) {
