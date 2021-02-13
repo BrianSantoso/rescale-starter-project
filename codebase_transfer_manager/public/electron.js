@@ -1,9 +1,6 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer, Notification, dialog } = require("electron");
 const path = require("path");
-// const FormData = require('form-data');
-// const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-// const fetch = require('node-fetch');
-const axios = require('axios');
+const fetch = require('node-fetch');
 const request = require('request');
 const fs = require('fs');
 const isDev = require("electron-is-dev");
@@ -47,23 +44,23 @@ async function createWindow() {
             ? "http://localhost:3000"
             : `file://${path.join(__dirname, "../build/index.html")}`
     );
-
-
-    console.log('TEST')
-    setInterval(() => {
-        console.log('setInterval')
-        axios.get("http://localhost:8080/allfiles")
-            .then(res => {
-                console.log(res)
-                ipcRenderer.send('allFiles', res);
-            })
-    }, 1000);
 }
 
 // Just for testing
 ipcMain.on('toMain', (event, data) => {
-    console.log('Hello there');
-    console.log(data);
+    // console.log(data);
+    setInterval(() => {
+        console.log('setInterval')
+        request("http://localhost:8080/allfiles", function(err, res, body) {
+            mainWindow.webContents.send('allFiles', body);
+        });
+        // old aproach:
+        // axios.get("http://localhost:8080/allfiles")
+        //     .then(res => {
+        //         console.log(res)
+        //         ipcRenderer.send('allFiles', res);
+        //     })  
+    }, 1000);
 });
 
 // Callback for notifications
@@ -99,29 +96,6 @@ ipcMain.on('upload', async (event, data) => {
             console.log('body:', body)
             const fileID = body.split(' ')[1];
         });
-        // return new Promise((resolve, reject) => {
-        //     request(options, function (err, res, body) {
-        //         if (err) {
-        //             reject(err);
-        //         } else {
-        //             resolve(body);
-        //         }
-        //     });
-        // });
-        // Old approach:
-        // let formData = new FormData();
-        // filePaths.forEach((fPath) => {
-        //     console.log('fPath', fPath)
-        //     formData.append('uploadFile', fs.createReadStream(fPath))
-        // });
-        // var request = new XMLHttpRequest();
-        // request.open("POST", "/upload");
-        // return request.send(JSON.stringify(formData));
-
-        // return fetch('http://localhost:8080/upload', {
-        //     method: 'POST',
-        //     body: formData
-        // })
     });
 });
 

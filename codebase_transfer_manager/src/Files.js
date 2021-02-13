@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-// import { ipcRenderer } from "electron";
-console.log('TESTESTESTESTSETSET')
 function Files(props) {
 
     let [files, setFiles] = useState([]);
@@ -9,6 +6,7 @@ function Files(props) {
     useEffect(() => {
         // console.log('ipcRenderer', ipcRenderer)
         window.api.receive('allFiles', (res) => {
+            setFiles(res)
             console.log('RECEIVED')
         })
     }, []);
