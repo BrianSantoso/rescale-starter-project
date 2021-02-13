@@ -2,6 +2,7 @@ import React from "react";
 import logo from "./logo.png";
 import "./App.css";
 import Files from "./Files.js";
+import Download from "./Download.js";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                 }}>
                     Upload File
                 </button>
+                <Download></Download>
                 <Files></Files>
             </header>
         </div>

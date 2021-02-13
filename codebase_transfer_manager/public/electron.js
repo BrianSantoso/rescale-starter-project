@@ -71,7 +71,7 @@ ipcMain.on('upload', async (event, data) => {
     // Show the file upload dialog
     dialog.showOpenDialog({
         properties:['openFile']
-    })
+    }, )
     .then((files) => {
         console.log('Files:', files) // TODO: handle "cancelling" the file dialog
         let filePaths = files.filePaths
@@ -83,15 +83,19 @@ ipcMain.on('upload', async (event, data) => {
                 "uploadFile" : fs.createReadStream(filePaths[0])
             }
         };
-        return new Promise((resolve, reject) => {
-            request(options, function (err, res, body) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(body);
-                }
-            });
+        request(options, function(err, res, body) {
+            console.log('body:', body)
+            const fileID = body.split(' ')[1];
         });
+        // return new Promise((resolve, reject) => {
+        //     request(options, function (err, res, body) {
+        //         if (err) {
+        //             reject(err);
+        //         } else {
+        //             resolve(body);
+        //         }
+        //     });
+        // });
         // Old approach:
         // let formData = new FormData();
         // filePaths.forEach((fPath) => {
@@ -106,9 +110,6 @@ ipcMain.on('upload', async (event, data) => {
         //     method: 'POST',
         //     body: formData
         // })
-    })
-    .then((res) => {
-        console.log('response:', res)
     });
 });
 

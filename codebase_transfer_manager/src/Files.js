@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+console.log('TESTESTESTESTSETSET')
+function Files(props) {
 
-function Files() {
+    let [files, setFiles] = useState([]);
+
+    useEffect(() => {
+        console.log('TEST')
+        setInterval(() => {
+            console.log('setInterval')
+            axios.get("http://localhost:8080/allfiles")
+                .then(res => {
+                    console.log(res)
+                    setFiles(res.body)
+                })
+        }, 1000);
+    }, []);
+
     return (
-        <div> Hello World </div>
+        <div className=''> 
+            <p>Files</p> 
+            { files }
+        </div>
     );
 }
 
