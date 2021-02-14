@@ -49,6 +49,7 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
+        "downloadjs": "^1.4.7",
         "electron-is-dev": "^1.2.0",
         "node-fetch": "^2.6.1",
         "xmlhttprequest": "^1.8.0"

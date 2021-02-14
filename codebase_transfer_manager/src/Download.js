@@ -11,6 +11,10 @@ function Download() {
         console.log('Download Button Pressed')
 
         // Download stuff
+        window.api.send('download', {
+            fileID: fileID,
+            fileExtension: extension
+        })
     }
 
     const onFileIDChange = (event) => {

@@ -4,6 +4,8 @@ const fetch = require('node-fetch');
 const request = require('request');
 const fs = require('fs');
 const isDev = require("electron-is-dev");
+// const download = require("downloadjs");
+
 
 let mainWindow;
 
@@ -50,7 +52,6 @@ async function createWindow() {
 ipcMain.on('toMain', (event, data) => {
     // console.log(data);
     setInterval(() => {
-        console.log('setInterval')
         request("http://localhost:8080/allfiles", function(err, res, body) {
             mainWindow.webContents.send('allFiles', body);
         });
@@ -101,10 +102,39 @@ ipcMain.on('upload', async (event, data) => {
 
 // Callback for downloading files
 ipcMain.on('download', async (event, fileInfo) => {
+    const { fileID, fileExtension } = fileInfo;
     console.log('[Backend] Downloading file:', fileID, 'with extension: ', fileExtension);
     
-    // Send HTTP GET request to download the file
+    const download = (url, path, callback) => {
+        request.head(url, (err, res, body) => {
+            request(url)
+            .pipe(fs.createWriteStream(path))
+            .on('close', callback)
+        })
+    }
 
+    const path = `../client_file_downloads/${fileID}.${fileExtension}`
+    const url = 'http://localhost:8080/files/?fileId='+fileID;
+
+    download("./tmp/5a326763b71b0182.png", path, () => {
+        console.log('Download finished')
+    })
+
+    // // Send HTTP GET request to download the file
+    // let req = request.defaults({
+    //     headers: {
+    //         'fileId': fileID,
+    //     }
+    // });
+    
+    // req('http://localhost:8080/files/', function(err, res, body) {
+    //     console.log(err, body);
+    //     const url = "./tmp/" + body.split('\"')[1]
+    //     const path = './'
+    //     download(url, path, () => {});
+ 
+
+    // })
 });
 
 /* 
